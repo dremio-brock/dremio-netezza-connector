@@ -17,6 +17,7 @@ package com.dremio.exec.store.jdbc.conf;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.dremio.exec.catalog.conf.Secret;
 import com.dremio.options.OptionManager;
 import com.dremio.security.CredentialsService;
 import org.hibernate.validator.constraints.NotBlank;
@@ -34,9 +35,9 @@ import com.google.common.annotations.VisibleForTesting;
 import io.protostuff.Tag;
 
 /**
- * Configuration for SQLite sources.
+ * Configuration for Netezza sources.
  */
-@SourceType(value = "NETEZZA", label = "Netezza", uiConfig = "netezza-layout.json")
+@SourceType(value = "NETEZZARP", label = "Netezza", uiConfig = "netezza-layout.json")
 public class NetezzaConf extends AbstractArpConf<NetezzaConf> {
   private static final String ARP_FILENAME = "arp/implementation/netezza-arp.yaml";
   private static final ArpDialect ARP_DIALECT =
@@ -44,18 +45,19 @@ public class NetezzaConf extends AbstractArpConf<NetezzaConf> {
   private static final String DRIVER = "org.netezza.Driver";
   private static Logger logger = Logger.getLogger(NetezzaConf.class);
 
-  @NotBlank
+
   @Tag(1)
   @DisplayMetadata(label = "JDBC String (example: jdbc:netezza://localhost:5480/system")
   public String jdbcString;
 
-  @NotBlank
+
   @Tag(2)
   @DisplayMetadata(label = "username")
   public String username;
 
-  @NotBlank
+
   @Tag(3)
+  @Secret
   @DisplayMetadata(label = "password")
   public String password;
 

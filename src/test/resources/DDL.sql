@@ -1,0 +1,25 @@
+CREATE TABLE ADMIN.ALL_TYPES (
+	A BIGINT,
+	B BOOLEAN,
+	C BYTEINT,
+	D CHAR(100),
+	E DATE,
+	F DECIMAL,
+	G DOUBLE,
+	H FLOAT,
+	I INTEGER,
+	J NCHAR,
+	K NVARCHAR(100),
+	L REAL,
+	M SMALLINT,
+	N ST_GEOMETRY(100),
+	O TIME,
+	P TIMESTAMP,
+	Q VARBINARY(100),
+	R VARCHAR(100)
+);
+
+INSERT INTO ADMIN.ALL_TYPES
+(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R)
+VALUES(0, FALSE, 0, 'D', CURRENT_DATE, 0.34, 33.11, 0.39493, 31, 'd', 'dfad', 0, 0, null, current_time, current_timestamp, hex_to_binary('464F4F'), 'A');
+

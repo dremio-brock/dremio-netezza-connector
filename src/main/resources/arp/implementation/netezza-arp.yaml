@@ -16,7 +16,7 @@
 
 metadata:
   # Manually Configured Metadata Section.
-  name: NETEZZA
+  name: NETEZZARP
   apiname: netezza
   spec_version: '1'
 

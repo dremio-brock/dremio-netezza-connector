@@ -1,5 +1,5 @@
 {
-  "sourceType": "SQLITE",
+  "sourceType": "NETEZZARP",
   "metadataRefresh": {
     "datasetDiscovery": true
   },
@@ -14,7 +14,7 @@
             "layout": "row",
             "elements": [
               {
-                "propName": "config.database",
+                "propName": "config.jdbcString",
                 "validate": {
                   "isRequired": true
                 }
