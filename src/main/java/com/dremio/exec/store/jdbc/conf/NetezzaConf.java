@@ -74,14 +74,12 @@ public class NetezzaConf extends AbstractArpConf<NetezzaConf> {
     final String jdbcString = checkNotNull(this.jdbcString, "Missing database.");
     checkNotNull(this.username, "Missing username.");
     checkNotNull(this.password, "Missing password.");
-    logger.info(String.format("%s", jdbcString));
     return String.format("%s", jdbcString);
   }
 
   @Override
   @VisibleForTesting
   public Config toPluginConfig(CredentialsService credentialsService, OptionManager optionManager) {
-    logger.info("in toPluginConfig");
     return JdbcStoragePlugin.Config.newBuilder()
         .withDialect(getDialect())
         .withFetchSize(fetchSize)
@@ -93,20 +91,17 @@ public class NetezzaConf extends AbstractArpConf<NetezzaConf> {
   }
 
   private CloseableDataSource newDataSource() {
-    logger.info("in CloseableDataSource");
     return DataSources.newGenericConnectionPoolDataSource(DRIVER,
       toJdbcConnectionString(), username, password, null, DataSources.CommitMode.DRIVER_SPECIFIED_COMMIT_MODE);
   }
 
   @Override
   public ArpDialect getDialect() {
-    logger.info("in ArpDialect");
     return ARP_DIALECT;
   }
 
   @VisibleForTesting
   public static ArpDialect getDialectSingleton() {
-    logger.info("in ArpDialect");
     return ARP_DIALECT;
   }
 }
