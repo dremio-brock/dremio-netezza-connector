@@ -21,12 +21,12 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.dremio.plugin</groupId>
-  <version>11.0.0-202011171636110752-16ab953d</version>
+  <version>17.0.0</version>
   <artifactId>dremio-netezza-plugin</artifactId>
   <name>Dremio Netezza Community Connector</name>
 
   <properties>
-    <version.dremio>11.0.0-202011171636110752-16ab953d</version.dremio>
+    <version.dremio>17.0.0-202107060524010627-31b5222b</version.dremio>
   </properties>
 
   <dependencies>

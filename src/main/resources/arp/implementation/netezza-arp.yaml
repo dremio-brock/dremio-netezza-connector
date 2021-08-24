@@ -67,6 +67,11 @@ data_types:
     dremio:
       name: "integer"
     required_cast_arguments: "none"
+  - source:
+      name: "numeric"
+    dremio:
+      name: "decimal"
+    required_cast_arguments: "Cast"
 
 
 relational_algebra:

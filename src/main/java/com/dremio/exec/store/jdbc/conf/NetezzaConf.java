@@ -17,27 +17,25 @@ package com.dremio.exec.store.jdbc.conf;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import com.dremio.exec.catalog.conf.Secret;
+import com.dremio.exec.store.jdbc.*;
 import com.dremio.options.OptionManager;
 import com.dremio.security.CredentialsService;
-import org.hibernate.validator.constraints.NotBlank;
 import org.apache.log4j.Logger;
 import com.dremio.exec.catalog.conf.DisplayMetadata;
 import com.dremio.exec.catalog.conf.NotMetadataImpacting;
+import com.dremio.exec.catalog.conf.Secret;
 import com.dremio.exec.catalog.conf.SourceType;
-import com.dremio.exec.store.jdbc.CloseableDataSource;
-import com.dremio.exec.store.jdbc.DataSources;
-import com.dremio.exec.store.jdbc.JdbcStoragePlugin;
-import com.dremio.exec.store.jdbc.JdbcStoragePlugin.Config;
+import com.dremio.exec.store.jdbc.JdbcPluginConfig;
 import com.dremio.exec.store.jdbc.dialect.arp.ArpDialect;
+import com.dremio.exec.store.jdbc.dialect.arp.ArpYaml;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.annotations.VisibleForTesting;
-
 import io.protostuff.Tag;
 
 /**
  * Configuration for Netezza sources.
  */
-@SourceType(value = "NETEZZARP", label = "Netezza", uiConfig = "netezza-layout.json")
+@SourceType(value = "NETEZZARP", label = "Netezza", uiConfig = "netezza-layout.json", externalQuerySupported = true)
 public class NetezzaConf extends AbstractArpConf<NetezzaConf> {
   private static final String ARP_FILENAME = "arp/implementation/netezza-arp.yaml";
   private static final ArpDialect ARP_DIALECT =
@@ -68,8 +66,18 @@ public class NetezzaConf extends AbstractArpConf<NetezzaConf> {
 
   @Tag(5)
   @NotMetadataImpacting
-  @DisplayMetadata(label = ENABLE_EXTERNAL_QUERY_LABEL)
+  @JsonIgnore
   public boolean enableExternalQuery = false;
+
+  @Tag(6)
+  @DisplayMetadata(label = "Maximum idle connections")
+  @NotMetadataImpacting
+  public int maxIdleConns = 8;
+
+  @Tag(7)
+  @DisplayMetadata(label = "Connection idle time (s)")
+  @NotMetadataImpacting
+  public int idleTimeSec = 60;
 
   @VisibleForTesting
   public String toJdbcConnectionString() {
@@ -81,20 +89,25 @@ public class NetezzaConf extends AbstractArpConf<NetezzaConf> {
 
   @Override
   @VisibleForTesting
-  public Config toPluginConfig(CredentialsService credentialsService, OptionManager optionManager) {
-    return JdbcStoragePlugin.Config.newBuilder()
-        .withDialect(getDialect())
-        .withFetchSize(fetchSize)
-        .withDatasourceFactory(this::newDataSource)
-        .clearHiddenSchemas()
-        .addHiddenSchema("SYSTEM")
-        .withAllowExternalQuery(enableExternalQuery)
-        .build();
+  public JdbcPluginConfig buildPluginConfig(
+          JdbcPluginConfig.Builder configBuilder,
+          CredentialsService credentialsService,
+          OptionManager optionManager
+  ) {
+    return configBuilder.withDialect(getDialect())
+            .withDialect(getDialect())
+            .withFetchSize(fetchSize)
+            .withDatasourceFactory(this::newDataSource)
+            .clearHiddenSchemas()
+            .addHiddenSchema("SYSTEM")
+            .build();
   }
+
 
   private CloseableDataSource newDataSource() {
     return DataSources.newGenericConnectionPoolDataSource(DRIVER,
-      toJdbcConnectionString(), username, password, null, DataSources.CommitMode.DRIVER_SPECIFIED_COMMIT_MODE);
+            toJdbcConnectionString(), username, password, null,
+            DataSources.CommitMode.DRIVER_SPECIFIED_COMMIT_MODE, maxIdleConns, idleTimeSec);
   }
 
   @Override
